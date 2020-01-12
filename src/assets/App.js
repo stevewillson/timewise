@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
 import Header from '../components/layout/Header';
-import TimeTrack from '../components/TimeTrack/TimeTrack';
+import TimeTrackLayout from '../components/TimeTrackLayout/TimeTrackLayout';
 import './App.css';
 
 class App extends Component {
@@ -15,7 +15,7 @@ class App extends Component {
           <h1>Timewise time tracking</h1>
         )} />
         <Route exact path="/track" render={() => (
-          <TimeTrack />
+          <TimeTrackLayout />
         )} />
         </div>
       </Router>

@@ -1,7 +1,10 @@
 const initialState = {
   timeData: [],
   timeView: 'unit',
-  date: new Date()
+  date: new Date(),
+  todoItems: [
+    { name: 'test' },
+  ],
 }
 
 const reducer = (state = initialState, action) => {
@@ -19,6 +22,12 @@ const reducer = (state = initialState, action) => {
     return {
       ...state,
       date: action.payload.date
+    }
+  } else if (action.type === 'ADDTODO') {
+    let newTodoItems = state.todoItems.push(action.payload.name);
+    return {
+      ...state,
+      todoItems: newTodoItems,
     }
   }
 

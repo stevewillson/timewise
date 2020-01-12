@@ -3,11 +3,11 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import { useDispatch } from 'react-redux';
 import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
+import "../../../node_modules/react-datepicker/dist/react-datepicker.css";
 
-const TimeTrack = () => {
+const TrackedTime = () => {
   // get state values from redux
-  const { date } = useSelector(state => state)
+  const { events, date } = useSelector(state => state)
   const dispatch = useDispatch();
 
   const btnStyle = {
@@ -23,29 +23,20 @@ const TimeTrack = () => {
 
   const tableContent =
     <React.Fragment>
-      <h1>Timewise tracking</h1> 
+      <h1>How Time Was Spent</h1>
     </React.Fragment>
 
   return (
     <React.Fragment>
-    <form>
-      <label>TimeTrack File: 
-        <input 
-          type="file" 
-          id="timeInput" 
-          onChange={() => {}}
-          style={btnStyle}
-        />
-      </label>
-    </form>
+    {tableContent}
     <DatePicker
       selected={date}
       onChange={(date) => dispatch({ type: 'DATECHANGE', payload: { date: date }})} //only when value has changed
     />
-    <button style={btnStyle} onClick={() => dispatch({ type: 'ADDEVENT', payload: { view: 'all' }})}>Show Date</button>
-    {tableContent}
+    <button style={btnStyle} onClick={() => dispatch({ type: 'EXPORTDATA' })}>Export</button>
+    
     </React.Fragment>
   );
 };
 
-export default TimeTrack;
+export default TrackedTime;
