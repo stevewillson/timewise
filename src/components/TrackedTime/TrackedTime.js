@@ -7,7 +7,7 @@ import "../../../node_modules/react-datepicker/dist/react-datepicker.css";
 
 const TrackedTime = () => {
   // get state values from redux
-  const { events, date } = useSelector(state => state)
+  const { date } = useSelector(state => state)
   const dispatch = useDispatch();
 
   const btnStyle = {

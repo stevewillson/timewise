@@ -24,7 +24,6 @@ const TimePlan = () => {
   const tableContent =
     <React.Fragment>
       <h1>Planned Time</h1>
-        
     </React.Fragment>
 
   return (

@@ -2,9 +2,9 @@ const initialState = {
   timeData: [],
   timeView: 'unit',
   date: new Date(),
-  todoItems: [
-    { name: 'test' },
-  ],
+  todoItems: [],
+  completeItems: [],
+  notes: ''
 }
 
 const reducer = (state = initialState, action) => {
@@ -24,13 +24,31 @@ const reducer = (state = initialState, action) => {
       date: action.payload.date
     }
   } else if (action.type === 'ADDTODO') {
-    let newTodoItems = state.todoItems.push(action.payload.name);
     return {
       ...state,
-      todoItems: newTodoItems,
+      todoItems: [...state.todoItems.slice(), { name: action.payload.name }]
+    }
+  } else if (action.type === 'REMOVETODO') {
+    let newTodoItems = state.todoItems.slice()
+    newTodoItems.splice(action.payload.remIndex, 1)
+    return {
+      ...state,
+      todoItems: newTodoItems
+    }
+  } else if (action.type === 'COMPLETETODO') {
+    let newCompleteItems = state.completeItems.slice()
+    newCompleteItems = [...newCompleteItems, { name: state.todoItems[action.payload.completeIndex].name }]
+
+    return {
+      ...state,
+      completeItems: newCompleteItems
+    }
+  } else if (action.type === 'SETNOTES') {
+    return {
+      ...state,
+      notes: action.payload.notes
     }
   }
-
   return state;
 }
 
