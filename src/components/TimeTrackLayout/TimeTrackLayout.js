@@ -1,15 +1,13 @@
 import React from 'react';
-//import { DateTime } from 'luxon';
 import { useSelector } from 'react-redux';
 import { useDispatch } from 'react-redux';
 import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
 import TimePlan from '../TimePlan/TimePlan';
 import TrackedTime from '../TrackedTime/TrackedTime';
 import TodoList from '../TodoList/TodoList';
 import NotesList from '../NotesList/NotesList';
-
-import RGL from 'react-grid-layout';
+import "react-datepicker/dist/react-datepicker.css";
+import '../../assets/App.css';
 
 const TimeTrackLayout = () => {
 
@@ -31,10 +29,8 @@ const TimeTrackLayout = () => {
   // layout will be as follows:
   // Time Plan | Tracked Time
   // NotesList | TodoList
-  
   return (
     <React.Fragment>
-      <h1>Timewise tracking</h1>
       <form>
         <label>Import File: 
         <input 
@@ -49,16 +45,23 @@ const TimeTrackLayout = () => {
         selected={date}
         onChange={(date) => dispatch({ type: 'DATECHANGE', payload: { date: date }})} //only when value has changed
       />
-      <button style={btnStyle} onClick={() => dispatch({ type: 'EXPORTDATA' })}>Export</button>  
-      <RGL className="layout" cols={2} rowHeight={100} width={1200} >
-        <div key="a" data-grid={{x: 0, y: 0, w: 1, h: 2}}><TimePlan /></div>
-        <div key="b" data-grid={{x: 1, y: 0, w: 1, h: 2}}><TrackedTime /></div>
-        <div key="c" data-grid={{x: 0, y: 2, w: 1, h: 2}}><TodoList /></div>
-        <div key="d" data-grid={{x: 1, y: 2, w: 1, h: 2}}><NotesList /></div>
-      </RGL>
+      <button style={btnStyle} onClick={() => dispatch({ type: 'EXPORTDATA' })}>Export</button>
+      <div className="grid-container">
+        <div className="plan-layout">
+          <TimePlan />
+        </div>
+        <div className="tracked-layout">
+          <TrackedTime />
+        </div>
+        <div className="todo-layout">
+          <TodoList />
+        </div>
+        <div className="notes-layout">
+          <NotesList />
+        </div>
+      </div>
     </React.Fragment>
   )
-  
 }
 
 export default TimeTrackLayout;

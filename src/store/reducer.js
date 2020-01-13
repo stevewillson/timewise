@@ -2,9 +2,11 @@ const initialState = {
   timeData: [],
   timeView: 'unit',
   date: new Date(),
-  todoItems: [
-    { name: 'test' },
-  ],
+  todoItems: [],
+  completeItems: [],
+  notes: '',
+  plannedEvents: [],
+  trackedEvents: [],
 }
 
 const reducer = (state = initialState, action) => {
@@ -24,12 +26,71 @@ const reducer = (state = initialState, action) => {
       date: action.payload.date
     }
   } else if (action.type === 'ADDTODO') {
-    let newTodoItems = state.todoItems.push(action.payload.name);
     return {
       ...state,
-      todoItems: newTodoItems,
+      todoItems: [...state.todoItems.slice(), { name: action.payload.name }]
+    }
+  } else if (action.type === 'REMOVETODO') {
+    let newTodoItems = state.todoItems.slice()
+    newTodoItems.splice(action.payload.remIndex, 1)
+    return {
+      ...state,
+      todoItems: newTodoItems
+    }
+  } else if (action.type === 'REMOVECOMPLETETODO') {
+  let newCompleteTodoItems = state.completeItems.slice()
+  newCompleteTodoItems.splice(action.payload.remIndex, 1)
+  return {
+    ...state,
+    completeItems: newCompleteTodoItems
+  }
+} else if (action.type === 'COMPLETETODO') {
+    let newCompleteItems = state.completeItems.slice()
+    newCompleteItems = [...newCompleteItems, { name: state.todoItems[action.payload.completeIndex].name }]
+
+    return {
+      ...state,
+      completeItems: newCompleteItems
+    }
+  } else if (action.type === 'SETNOTES') {
+    return {
+      ...state,
+      notes: action.payload.notes
+    }
+  } else if (action.type === 'ADDPLANNEDEVENT') {
+    let newPlannedEvents = state.plannedEvents.slice()
+    newPlannedEvents = [...newPlannedEvents, action.payload.event]
+    return {
+      ...state,
+      plannedEvents: newPlannedEvents,
+    }
+  } else if (action.type === 'ADDTRACKEDEVENT') {
+    let newTrackedEvents = state.trackedEvents.slice()
+    newTrackedEvents = [...newTrackedEvents, action.payload.event]
+    return {
+      ...state,
+      trackedEvents: newTrackedEvents,
+    }
+  } else if (action.type === 'SETTRACKEDEVENTNAME') {
+    // need to update to update the name supplied
+    let newTrackedEvents = state.trackedEvents.slice()
+    newTrackedEvents = [...newTrackedEvents, action.payload.event]
+    return {
+      ...state,
+      trackedEvents: newTrackedEvents,
+    }
+  } else if (action.type === 'SETPLANNEDEVENTNAME') {
+    // need to update to update the name supplied
+    let newPlannedEvents = state.plannedEvents.slice()
+    newPlannedEvents = [...newPlannedEvents, action.payload.event]
+    return {
+      ...state,
+      plannedEvents: newPlannedEvents,
     }
   }
+
+
+
 
   return state;
 }
