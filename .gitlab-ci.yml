@@ -22,7 +22,7 @@ deploy_review:
   script:
     - echo "Deploy a review app"
     - echo "Copying files to production server using scp"
-    - scp -i $SSH_DEPLOY_KEY -o UserKnownHostsFile=./ssh_config/known_hosts -r -P 7890 ./build/* gitlab@armyadmintools.com:/var/www/html/timewise/
+    - scp -i $SSH_DEPLOY_KEY_AAT -o UserKnownHostsFile=./ssh_config/known_hosts -r -P 7890 ./build/* gitlab@armyadmintools.com:/var/www/html/timewise/
   environment:
     name: review/$CI_COMMIT_REF_NAME
     url: https://$CI_ENVIRONMENT_SLUG.armyadmintools.com
@@ -37,7 +37,7 @@ deploy_staging:
     - echo "Deploy to staging server"
     - echo "Deploy a review app"
     - echo "Copying files to production server using scp"
-    - scp -i $SSH_DEPLOY_KEY -o UserKnownHostsFile=./ssh_config/known_hosts -r -P 7890 ./build/* gitlab@armyadmintools.com:/var/www/html/timewise/
+    - scp -i $SSH_DEPLOY_KEY_AAT -o UserKnownHostsFile=./ssh_config/known_hosts -r -P 7890 ./build/* gitlab@armyadmintools.com:/var/www/html/timewise/
   environment:
     name: staging
     url: https://armyadmintools.com/timewise/
@@ -49,7 +49,7 @@ deploy_prod:
   script:
     - echo "Deploy to production server"
     - echo "Copying files to production server using scp"
-    - scp -i $SSH_DEPLOY_KEY -o UserKnownHostsFile=./ssh_config/known_hosts -r -P 7890 ./build/* gitlab@armyadmintools.com:/var/www/html/timewise/
+    - scp -i $SSH_DEPLOY_KEY_AAT -o UserKnownHostsFile=./ssh_config/known_hosts -r -P 7890 ./build/* gitlab@armyadmintools.com:/var/www/html/timewise/
   environment:
     name: production
     url: https://armyadmintools.com/
