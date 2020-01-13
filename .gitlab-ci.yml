@@ -2,15 +2,8 @@ default:
   image: node:lts
 
 stages:
-  - test
   - build
   - deploy
-
-test:
-  stage: test
-  script: 
-    - echo "Running tests"
-    - echo "No tests to run"
 
 build:
   stage: build
