@@ -42,9 +42,12 @@ deploy_staging:
   stage: deploy
   script:
     - echo "Deploy to staging server"
+    - echo "Deploy a review app"
+    - echo "Copying files to production server using scp"
+    - scp -i $SSH_DEPLOY_KEY -o UserKnownHostsFile=./ssh_config/known_hosts -r -P 7890 ./build/* gitlab@armyadmintools.com:/var/www/html/timewise/
   environment:
     name: staging
-    url: https://armyadmintools.com/staging/
+    url: https://armyadmintools.com/timewise/
   only:
   - master
 
