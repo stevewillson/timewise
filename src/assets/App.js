@@ -10,13 +10,10 @@ class App extends Component {
     return (
       <Router>
         <div className="App">
-        <Header />
-        <Route exact path="/" render={() => (
-          <h1>Timewise time tracking</h1>
-        )} />
-        <Route exact path="/track" render={() => (
-          <TimeTrackLayout />
-        )} />
+          <Header />
+          <Route exact path="/" render={() => (
+            <TimeTrackLayout />
+          )} />
         </div>
       </Router>
     );

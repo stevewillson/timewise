@@ -4,7 +4,9 @@ const initialState = {
   date: new Date(),
   todoItems: [],
   completeItems: [],
-  notes: ''
+  notes: '',
+  plannedEvents: [],
+  trackedEvents: [],
 }
 
 const reducer = (state = initialState, action) => {
@@ -35,7 +37,14 @@ const reducer = (state = initialState, action) => {
       ...state,
       todoItems: newTodoItems
     }
-  } else if (action.type === 'COMPLETETODO') {
+  } else if (action.type === 'REMOVECOMPLETETODO') {
+  let newCompleteTodoItems = state.completeItems.slice()
+  newCompleteTodoItems.splice(action.payload.remIndex, 1)
+  return {
+    ...state,
+    completeItems: newCompleteTodoItems
+  }
+} else if (action.type === 'COMPLETETODO') {
     let newCompleteItems = state.completeItems.slice()
     newCompleteItems = [...newCompleteItems, { name: state.todoItems[action.payload.completeIndex].name }]
 
@@ -48,7 +57,41 @@ const reducer = (state = initialState, action) => {
       ...state,
       notes: action.payload.notes
     }
+  } else if (action.type === 'ADDPLANNEDEVENT') {
+    let newPlannedEvents = state.plannedEvents.slice()
+    newPlannedEvents = [...newPlannedEvents, action.payload.event]
+    return {
+      ...state,
+      plannedEvents: newPlannedEvents,
+    }
+  } else if (action.type === 'ADDTRACKEDEVENT') {
+    let newTrackedEvents = state.trackedEvents.slice()
+    newTrackedEvents = [...newTrackedEvents, action.payload.event]
+    return {
+      ...state,
+      trackedEvents: newTrackedEvents,
+    }
+  } else if (action.type === 'SETTRACKEDEVENTNAME') {
+    // need to update to update the name supplied
+    let newTrackedEvents = state.trackedEvents.slice()
+    newTrackedEvents = [...newTrackedEvents, action.payload.event]
+    return {
+      ...state,
+      trackedEvents: newTrackedEvents,
+    }
+  } else if (action.type === 'SETPLANNEDEVENTNAME') {
+    // need to update to update the name supplied
+    let newPlannedEvents = state.plannedEvents.slice()
+    newPlannedEvents = [...newPlannedEvents, action.payload.event]
+    return {
+      ...state,
+      plannedEvents: newPlannedEvents,
+    }
   }
+
+
+
+
   return state;
 }
 

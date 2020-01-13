@@ -13,6 +13,10 @@ const TodoList = () => {
     dispatch({ type: 'REMOVETODO', payload: { remIndex: remIndex }})
   }
 
+  const remCompleteItem = remIndex => {
+    dispatch({ type: 'REMOVECOMPLETETODO', payload: { remIndex: remIndex }})
+  }
+
   const completeItem = completeIndex => {
     dispatch({ type: 'COMPLETETODO', payload: { completeIndex: completeIndex }})
     dispatch({ type: 'REMOVETODO', payload: { remIndex: completeIndex }})
@@ -68,7 +72,12 @@ const TodoList = () => {
       )}
     />
     <h3>Completed Items:</h3> 
-    {completeItems.map(completeItem => <h3>{completeItem.name}</h3>)}
+    {completeItems.map((completeItem, completeItemIndex) => 
+      <h3>
+        {completeItem.name}{' '}
+        <button onClick={() => remCompleteItem(completeItemIndex)}>DELETE</button>
+      </h3>
+    )}
     </React.Fragment>
   );
 };

@@ -1,13 +1,12 @@
 import React from 'react';
-//import { DateTime } from 'luxon';
 import { useSelector } from 'react-redux';
 import { useDispatch } from 'react-redux';
 import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
 import TimePlan from '../TimePlan/TimePlan';
 import TrackedTime from '../TrackedTime/TrackedTime';
 import TodoList from '../TodoList/TodoList';
 import NotesList from '../NotesList/NotesList';
+import "react-datepicker/dist/react-datepicker.css";
 import '../../assets/App.css';
 
 const TimeTrackLayout = () => {
@@ -30,10 +29,8 @@ const TimeTrackLayout = () => {
   // layout will be as follows:
   // Time Plan | Tracked Time
   // NotesList | TodoList
-  
   return (
     <React.Fragment>
-      <h1>Timewise tracking</h1>
       <form>
         <label>Import File: 
         <input 
@@ -49,23 +46,22 @@ const TimeTrackLayout = () => {
         onChange={(date) => dispatch({ type: 'DATECHANGE', payload: { date: date }})} //only when value has changed
       />
       <button style={btnStyle} onClick={() => dispatch({ type: 'EXPORTDATA' })}>Export</button>
-      <div class="grid-container">
-        <div class="plan-layout">
+      <div className="grid-container">
+        <div className="plan-layout">
           <TimePlan />
         </div>
-        <div class="tracked-layout">
+        <div className="tracked-layout">
           <TrackedTime />
         </div>
-        <div class="todo-layout">
+        <div className="todo-layout">
           <TodoList />
         </div>
-        <div class="notes-layout">
+        <div className="notes-layout">
           <NotesList />
         </div>
       </div>
     </React.Fragment>
   )
-  
 }
 
 export default TimeTrackLayout;

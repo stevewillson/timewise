@@ -1,5 +1,4 @@
 import React from 'react';
-//import { DateTime } from 'luxon';
 import { useSelector } from 'react-redux';
 import { useDispatch } from 'react-redux';
 import { Form, Field } from 'react-final-form';
@@ -8,17 +7,6 @@ const NotesList = () => {
   // get state values from redux
   const { notes } = useSelector(state => state)
   const dispatch = useDispatch();
-
-  const btnStyle = {
-    backgroundColor: '#707070',
-    color: 'white',
-    border: 'none',
-    borderRadius: '12px',
-    cursor: 'pointer',
-    margin: '6px',
-    textAlign: 'center',
-    fontSize: '16px',
-  }
 
   const onSubmit = values => {
     dispatch({ type: 'SETNOTES', payload: { notes: values.notes }})
