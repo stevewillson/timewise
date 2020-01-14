@@ -11,7 +11,7 @@ class App extends Component {
       <Router>
         <div className="App">
           <Header />
-          <Route exact path="/" render={() => (
+          <Route exact path="/timewise" render={() => (
             <TimeTrackLayout />
           )} />
         </div>

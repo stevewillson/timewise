@@ -19,4 +19,8 @@ deploy_staging:
   only:
   - master
   - devel
+  artifacts:
+    paths:
+    - ./build/
+    expire_in: 1 week
 

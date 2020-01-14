@@ -17,6 +17,7 @@ const TrackedTime = () => {
   const eventClick = (info) => {
     console.log('EVENT CLICK')
     console.log(info)
+    // get the event info, set the event info to be what is populated in a text box
   }
 
   const eventResize = (info) => {
