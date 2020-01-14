@@ -2,7 +2,6 @@ default:
   image: node:lts
 
 stages:
-  - build
   - deploy
 
 build:
@@ -20,6 +19,9 @@ build:
 deploy_review:
   stage: deploy
   script:
+    - npm install
+    - echo "Building the app"
+    - npm run-script build
     - echo "Deploy a review app"
     - echo "$SSH_DEPLOY_KEY_AAT" > "$(pwd)/ssh_key"
     - chmod 400 $(pwd)/ssh_key
