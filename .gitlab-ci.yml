@@ -4,18 +4,6 @@ default:
 stages:
   - deploy
 
-build:
-  stage: build
-  script:
-    - echo "Installing dependencies"
-    - npm install
-    - echo "Building the app"
-    - npm run-script build
-  artifacts:
-    paths:
-    - build/
-    expire_in: 1 week
-
 deploy_review:
   stage: deploy
   script:
