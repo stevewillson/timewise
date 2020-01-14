@@ -4,54 +4,19 @@ default:
 stages:
   - deploy
 
-deploy_review:
-  stage: deploy
-  script:
-    - npm install
-    - echo "Building the app"
-    - npm run-script build
-    - echo "Deploy a review app"
-    - echo "$SSH_DEPLOY_KEY_AAT" > "$(pwd)/ssh_key"
-    - chmod 400 $(pwd)/ssh_key
-    - echo "Copying files to production server using scp"
-    - scp -i $(pwd)/ssh_key -o UserKnownHostsFile=./ssh_config/known_hosts -r -P 7890 ./build/* gitlab@armyadmintools.com:/var/www/html/timewise/
-  only:
-    - branches
-  except:
-    - master
-
 deploy_staging:
   stage: deploy
   script:
+    - echo "Installing dependencies"
     - npm install
     - echo "Building the app"
-    - npm run-script build
+    - npm run build
+    - echo "Configure SSH key"
+    - echo "$SSH_DEPLOY_KEY_AAT" > "$(pwd)/ssh_key"
+    - chmod 400 $(pwd)/ssh_key
     - echo "Deploy to staging server"
-    - echo "$SSH_DEPLOY_KEY_AAT" > "$(pwd)/ssh_key"
-    - chmod 400 $(pwd)/ssh_key
-    - echo "Copying files to production server using scp"
     - scp -i $(pwd)/ssh_key -o UserKnownHostsFile=./ssh_config/known_hosts -r -P 7890 ./build/* gitlab@armyadmintools.com:/var/www/html/timewise/
-  environment:
-    name: staging
-    url: https://armyadmintools.com/timewise/
-  only:
-  - master
-
-deploy_prod:
-  stage: deploy
-  script:
-    - npm install
-    - echo "Building the app"
-    - npm run-script build
-    - echo "Deploy to production server"
-    - echo "$SSH_DEPLOY_KEY_AAT" > "$(pwd)/ssh_key"
-    - chmod 400 $(pwd)/ssh_key
-    - echo "Copying files to production server using scp"
-    - scp -i $(pwd)/ssh_key -o UserKnownHostsFile=./ssh_config/known_hosts -r -P 7890 ./build/* gitlab@armyadmintools.com:/var/www/html/timewise/
-  environment:
-    name: production
-    url: https://armyadmintools.com/
-  when: manual
   only:
   - master
   - devel
+
