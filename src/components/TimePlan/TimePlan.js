@@ -8,6 +8,7 @@ import FullCalendar from '@fullcalendar/react'
 import timeGridPlugin from '@fullcalendar/timegrid'
 import interaction from '@fullcalendar/interaction'
 import '../../assets/main.scss' // webpack must be configured to do this
+import uuid from 'uuid';
 
 const TimePlan = () => {
   // get state values from redux
@@ -15,32 +16,59 @@ const TimePlan = () => {
   const dispatch = useDispatch();
 
   const eventClick = (info) => {
-    console.log('EVENT CLICK')
-    console.log(info)
+    //console.log('EVENT CLICK')
+    const eventName = prompt("Set the title")
+    if (eventName !== '') {
+      dispatch({ 
+        type: 'SETPLANNEDEVENTNAME', 
+        payload: {
+          event: {
+            title: eventName,
+            start: info.dateStr,
+            id: info.event.id,
+          },
+        },
+      })  
+    }
   }
 
   const eventResize = (info) => {
-    console.log('EVENT RESIZE')
     console.log(info)
+    dispatch({ 
+      type: 'EDITPLANNEDEVENT', 
+      payload: {
+        event: {
+          start: info.event.start,
+          end: info.event.end,
+          id: info.event.id,
+        },
+      },
+    })
+    //console.log('EVENT RESIZE')
+    //console.log(info)
   }
 
   const eventDrop = (info) => {
+    // need to update the time of the event when dropped
     console.log('EVENT DROP')
     console.log(info)
   }
 
   const dateClick = (info) => {
-    console.log('DATE CLICK')
-    console.log(info)
-    dispatch({ 
-      type: 'ADDPLANNEDEVENT', 
-      payload: {
-        event: {
-          title: 'testTitle',
-          start: info.dateStr,
+    //console.log('DATE CLICK')
+    const eventName = prompt("Set the title")
+    if (eventName !== '') {
+      dispatch({ 
+        type: 'ADDPLANNEDEVENT', 
+        payload: {
+          event: {
+            title: eventName,
+            start: info.dateStr,
+            id: uuid.v4(),
+          },
         },
-      },
-    })
+      })
+    }
   }
 
   return (

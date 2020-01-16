@@ -81,16 +81,35 @@ const reducer = (state = initialState, action) => {
     }
   } else if (action.type === 'SETPLANNEDEVENTNAME') {
     // need to update to update the name supplied
-    let newPlannedEvents = state.plannedEvents.slice()
-    newPlannedEvents = [...newPlannedEvents, action.payload.event]
+    
+    // find the event that matches the id
+    const newPlannedEvents = state.plannedEvents.map(event => {
+      if (event.id === action.payload.event.id) {
+        event['title'] = action.payload.event.title;
+      }
+      return {...event};
+    })
+
+    return {
+      ...state,
+      plannedEvents: newPlannedEvents,
+    }
+  } else if (action.type === 'EDITPLANNEDEVENT') {
+    // need to update to update the name supplied
+    
+    // find the event that matches the id
+    const newPlannedEvents = state.plannedEvents.map(event => {
+      if (event.id === action.payload.event.id) {
+        event['title'] = action.payload.event.title;
+      }
+      return {...event};
+    })
+
     return {
       ...state,
       plannedEvents: newPlannedEvents,
     }
   }
-
-
-
 
   return state;
 }
