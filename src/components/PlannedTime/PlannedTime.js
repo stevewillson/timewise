@@ -10,12 +10,12 @@ import '../../assets/main.scss' // webpack must be configured to do this
 import uuid from 'uuid';
 import { DateTime } from 'luxon';
 
-const TrackedTime = () => {
+const PlannedTime = () => {
   // get state values from redux
-  const { trackedEvents } = useSelector(state => state)
+  const { plannedEvents } = useSelector(state => state)
   const dispatch = useDispatch();
 
-  const eventType = 'tracked';
+  const eventType = 'planned';
 
   const addEventSelected = (info) => {
     //console.log('EVENT SELECT TIME')
@@ -77,7 +77,7 @@ const TrackedTime = () => {
 
   return (
     <React.Fragment>
-      <h1>Tracked Time</h1>
+      <h1>Planned Time</h1>
       <FullCalendar 
         defaultView='timeGridDay'
         header={{
@@ -96,7 +96,7 @@ const TrackedTime = () => {
         slotDuration={{ minutes: 15 }}
         slotLabelInterval={{ hours: 1 }}
         editable={true}
-        events={trackedEvents}
+        events={plannedEvents}
         eventClick={eventClick}
         eventResize={eventResizeOrDrop}
         eventDrop={eventResizeOrDrop}
@@ -106,4 +106,4 @@ const TrackedTime = () => {
   );
 };
 
-export default TrackedTime;
+export default PlannedTime;

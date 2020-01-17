@@ -10,7 +10,19 @@ const initialState = {
 }
 
 const reducer = (state = initialState, action) => {
-  if (action.type === 'VIEWCHANGE') {
+
+  if (action.type === 'IMPORTDATA') {
+    // import the data that was read from the file
+    return {
+      ...state,
+      plannedEvents: action.payload.plannedEvents,
+      trackedEvents: action.payload.trackedEvents,
+      notes: action.payload.notes,
+      todoItems: action.payload.todoItems,
+      completeItems: action.payload.completeItems,
+    }
+  }
+  else if (action.type === 'VIEWCHANGE') {
     return {
       ...state,
       timeView: action.payload.view,
@@ -57,59 +69,98 @@ const reducer = (state = initialState, action) => {
       ...state,
       notes: action.payload.notes
     }
-  } else if (action.type === 'ADDPLANNEDEVENT') {
-    let newPlannedEvents = state.plannedEvents.slice()
-    newPlannedEvents = [...newPlannedEvents, action.payload.event]
-    return {
-      ...state,
-      plannedEvents: newPlannedEvents,
+  // ADD EVENTS
+  } else if (action.type === 'ADDEVENT') {
+    let events = [];
+    if (action.payload.eventType === 'planned') {
+      events = state.plannedEvents.slice()
+    } else if (action.payload.eventType === 'tracked') {
+      events = state.trackedEvents.slice()
     }
-  } else if (action.type === 'ADDTRACKEDEVENT') {
-    let newTrackedEvents = state.trackedEvents.slice()
-    newTrackedEvents = [...newTrackedEvents, action.payload.event]
-    return {
-      ...state,
-      trackedEvents: newTrackedEvents,
-    }
-  } else if (action.type === 'SETTRACKEDEVENTNAME') {
-    // need to update to update the name supplied
-    let newTrackedEvents = state.trackedEvents.slice()
-    newTrackedEvents = [...newTrackedEvents, action.payload.event]
-    return {
-      ...state,
-      trackedEvents: newTrackedEvents,
-    }
-  } else if (action.type === 'SETPLANNEDEVENTNAME') {
-    // need to update to update the name supplied
-    
-    // find the event that matches the id
-    const newPlannedEvents = state.plannedEvents.map(event => {
-      if (event.id === action.payload.event.id) {
-        event['title'] = action.payload.event.title;
+
+    const updatedEvents = [...events, action.payload.event]
+
+    if (action.payload.eventType === 'planned') {
+      return {
+        ...state,
+        plannedEvents: updatedEvents,
       }
-      return {...event};
+    } else if (action.payload.eventType === 'tracked') {
+      return {
+        ...state,
+        trackedEvents: updatedEvents,
+      }
+    }
+    
+  } else if (action.type === 'EDITEVENTNAME') {
+    // need to update to update the name supplied
+    // find the event that matches the id
+    let events = [];
+    if (action.payload.eventType === 'planned') {
+      events = state.plannedEvents.slice()
+    } else if (action.payload.eventType === 'tracked') {
+      events = state.trackedEvents.slice()
+    }
+
+    const updatedEvents = events.map(event => {
+      if (event.id === action.payload.event.id) {
+        return {
+          ...event,
+          title: action.payload.event.title,
+        }
+      }
+      return {
+        ...event
+      };
     })
 
-    return {
-      ...state,
-      plannedEvents: newPlannedEvents,
-    }
-  } else if (action.type === 'EDITPLANNEDEVENT') {
-    // need to update to update the name supplied
-    
-    // find the event that matches the id
-    const newPlannedEvents = state.plannedEvents.map(event => {
-      if (event.id === action.payload.event.id) {
-        event['title'] = action.payload.event.title;
+    if (action.payload.eventType === 'planned') {
+      return {
+        ...state,
+        plannedEvents: updatedEvents,
       }
-      return {...event};
+    } else if (action.payload.eventType === 'tracked') {
+      return {
+        ...state,
+        trackedEvents: updatedEvents,
+      }
+    }
+
+  } else if (action.type === 'EDITEVENTTIME') {
+    // find the event that matches the id
+
+    let events = [];
+    if (action.payload.eventType === 'planned') {
+      events = state.plannedEvents.slice()
+    } else if (action.payload.eventType === 'tracked') {
+      events = state.trackedEvents.slice()
+    }
+
+    const updatedEvents = events.map(event => {
+      if (event.id === action.payload.event.id) {
+        return {
+          ...event,
+          start: action.payload.event.start,
+          end: action.payload.event.end,
+        }
+      }
+      return {
+        ...event
+      };
     })
 
-    return {
-      ...state,
-      plannedEvents: newPlannedEvents,
+    if (action.payload.eventType === 'planned') {
+      return {
+        ...state,
+        plannedEvents: updatedEvents,
+      }
+    } else if (action.payload.eventType === 'tracked') {
+      return {
+        ...state,
+        trackedEvents: updatedEvents,
+      }
     }
-  }
+  } 
 
   return state;
 }
