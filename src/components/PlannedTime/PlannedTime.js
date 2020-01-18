@@ -101,6 +101,7 @@ const PlannedTime = () => {
         selectable={true}
         slotDuration={{ minutes: 15 }}
         slotLabelInterval={{ hours: 1 }}
+        slotLabelFormat={() => ''}
         editable={true}
         events={plannedEvents}
         eventClick={eventClick}
