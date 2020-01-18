@@ -17,16 +17,15 @@ const NotesList = () => {
     <h1>Notes</h1>
     <Form 
       onSubmit={onSubmit}
+      initialValues={{ notes: notes }}
       render={({ handleSubmit, form, submitting, pristine, values }) => (
         <form onSubmit={async event => { 
           await handleSubmit(event)
         }}>
           <div>
-            <label>Notes: </label>
             <Field 
               name="notes" 
               component="textarea"
-              initialValue={notes}
             />
           </div>
           <div className="buttons">

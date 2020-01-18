@@ -77,14 +77,14 @@ const PlannedTime = () => {
 
   return (
     <React.Fragment>
-      <h1>Planned Time</h1>
       <FullCalendar 
         defaultView='timeGridDay'
         header={{
           left: '',
           center: 'title',
-          right: 'prev,next',
+          right: 'today prev,next',
         }}
+        titleFormat={() => 'Planned Time'}
         height={'auto'}
         allDaySlot={false}
         nowIndicator={true}
@@ -92,6 +92,12 @@ const PlannedTime = () => {
         plugins={[ interaction, timeGridPlugin ]} 
         minTime={'04:00:00'}
         maxTime={'21:00:00'}
+        columnHeaderFormat={{
+          weekday: 'long',
+          month: 'numeric',
+          day: 'numeric',
+          omitCommas: true,
+        }}
         selectable={true}
         slotDuration={{ minutes: 15 }}
         slotLabelInterval={{ hours: 1 }}

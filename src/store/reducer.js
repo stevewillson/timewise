@@ -13,6 +13,7 @@ const reducer = (state = initialState, action) => {
 
   if (action.type === 'IMPORTDATA') {
     // import the data that was read from the file
+    debugger
     return {
       ...state,
       plannedEvents: action.payload.plannedEvents,

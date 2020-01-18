@@ -87,8 +87,9 @@ const TimeTrackLayout = () => {
           style={btnStyle}
         />
         </label>
+        <button style={btnStyle} onClick={() => exportData(curState)}>Export</button>
       </form>
-      <button style={btnStyle} onClick={() => exportData(curState)}>Export</button>
+      
       <div className="grid-container">
         <div className="plan-layout">
           <PlannedTime />
