@@ -1,7 +1,7 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { useDispatch } from 'react-redux';
-import { Form, Field } from 'react-final-form';
+//import { Form, Field } from 'react-final-form';
 
 const NotesList = () => {
   // get state values from redux
@@ -15,6 +15,12 @@ const NotesList = () => {
   return (
     <React.Fragment>
     <h1>Notes</h1>
+
+    </React.Fragment>
+  );
+};
+
+/*
     <Form 
       onSubmit={onSubmit}
       render={({ handleSubmit, form, submitting, pristine, values }) => (
@@ -40,8 +46,6 @@ const NotesList = () => {
         </form>
       )}
     />
-    </React.Fragment>
-  );
-};
+*/
 
 export default NotesList;

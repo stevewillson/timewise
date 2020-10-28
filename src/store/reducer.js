@@ -1,7 +1,7 @@
 const initialState = {
   timeData: [],
   timeView: 'unit',
-  date: new Date(),
+  date: new Date().toISOString().slice(0,10),
   todoItems: [],
   completeItems: [],
   notes: '',
@@ -10,6 +10,7 @@ const initialState = {
 }
 
 const reducer = (state = initialState, action) => {
+  console.log(initialState.date);
   if (action.type === 'VIEWCHANGE') {
     return {
       ...state,
@@ -21,6 +22,7 @@ const reducer = (state = initialState, action) => {
       timeData: action.payload.timeData,
     }
   } else if (action.type === 'DATECHANGE') {
+    console.log(action.payload.date)
     return {
       ...state,
       date: action.payload.date

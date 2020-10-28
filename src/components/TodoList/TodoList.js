@@ -2,7 +2,7 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import { useDispatch } from 'react-redux';
 import "../../../node_modules/react-datepicker/dist/react-datepicker.css";
-import { Form, Field } from 'react-final-form';
+//import { Form, Field } from 'react-final-form';
 
 const TodoList = () => {
   // get state values from redux
@@ -36,7 +36,20 @@ const TodoList = () => {
           <button onClick={() => remItem(todoIndex)}>DELETE</button>
         </h3>
       )}
-    <Form 
+    
+    <h3>Completed Items:</h3> 
+    {completeItems.map((completeItem, completeItemIndex) => 
+      <h3>
+        {completeItem.name}{' '}
+        <button onClick={() => remCompleteItem(completeItemIndex)}>DELETE</button>
+      </h3>
+    )}
+    </React.Fragment>
+  );
+};
+
+/*
+<Form 
       onSubmit={onSubmit}
       initialValues={{}}
       render={({ handleSubmit, form, submitting, pristine, values }) => (
@@ -71,15 +84,6 @@ const TodoList = () => {
         </form>
       )}
     />
-    <h3>Completed Items:</h3> 
-    {completeItems.map((completeItem, completeItemIndex) => 
-      <h3>
-        {completeItem.name}{' '}
-        <button onClick={() => remCompleteItem(completeItemIndex)}>DELETE</button>
-      </h3>
-    )}
-    </React.Fragment>
-  );
-};
+*/
 
 export default TodoList;

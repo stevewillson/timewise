@@ -65,6 +65,7 @@ const TimePlan = () => {
         eventDrop={eventDrop}
         timeZone={'UTC'}
         dateClick={dateClick}
+        allDaySlot={false}
       />
     </React.Fragment>
   );

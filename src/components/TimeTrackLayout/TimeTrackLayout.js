@@ -1,12 +1,10 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { useDispatch } from 'react-redux';
-import DatePicker from "react-datepicker";
 import TimePlan from '../TimePlan/TimePlan';
 import TrackedTime from '../TrackedTime/TrackedTime';
 import TodoList from '../TodoList/TodoList';
 import NotesList from '../NotesList/NotesList';
-import "react-datepicker/dist/react-datepicker.css";
 import '../../assets/App.css';
 
 const TimeTrackLayout = () => {
@@ -41,9 +39,14 @@ const TimeTrackLayout = () => {
         />
         </label>
       </form>
-      <DatePicker
-        selected={date}
-        onChange={(date) => dispatch({ type: 'DATECHANGE', payload: { date: date }})} //only when value has changed
+      <input
+        id='dateSelect'
+        type='date'
+        value={date}
+        onChange={event => { 
+          console.log(event.target.value);
+          dispatch({ type: 'DATECHANGE', payload: { date: event.target.value}})
+        }}
       />
       <button style={btnStyle} onClick={() => dispatch({ type: 'EXPORTDATA' })}>Export</button>
       <div className="grid-container">
