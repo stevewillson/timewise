@@ -1,100 +1,82 @@
 const initialState = {
-  timeData: [],
-  timeView: 'unit',
   date: new Date().toISOString().slice(0,10),
-  todoItems: [],
-  completeItems: [],
-  notes: '',
-  plannedEvents: [],
-  trackedEvents: [],
+  planning: [],
+  tracking: [],
 }
 
 const reducer = (state = initialState, action) => {
-  console.log(initialState.date);
-  if (action.type === 'VIEWCHANGE') {
-    return {
-      ...state,
-      timeView: action.payload.view,
-    }
-  } else if (action.type === 'TIMEDATA') {
-    return {
-      ...state,
-      timeData: action.payload.timeData,
-    }
-  } else if (action.type === 'DATECHANGE') {
-    console.log(action.payload.date)
-    return {
-      ...state,
-      date: action.payload.date
-    }
-  } else if (action.type === 'ADDTODO') {
-    return {
-      ...state,
-      todoItems: [...state.todoItems.slice(), { name: action.payload.name }]
-    }
-  } else if (action.type === 'REMOVETODO') {
-    let newTodoItems = state.todoItems.slice()
-    newTodoItems.splice(action.payload.remIndex, 1)
-    return {
-      ...state,
-      todoItems: newTodoItems
-    }
-  } else if (action.type === 'REMOVECOMPLETETODO') {
-  let newCompleteTodoItems = state.completeItems.slice()
-  newCompleteTodoItems.splice(action.payload.remIndex, 1)
-  return {
-    ...state,
-    completeItems: newCompleteTodoItems
+  switch (action.type) {
+    case 'UPDATE_DISPLAY_DATE':
+      // update display date
+      return {
+        ...state,
+        date: action.payload.date
+      }
+
+    case 'CREATE_EVENT':
+      let newEvents = state[action.payload.calType].slice()
+      newEvents = [...newEvents, action.payload.event]
+      // create an event
+      return {
+        ...state,
+        [action.payload.calType]: newEvents,
+      }
+    case 'UPDATE_EVENT':
+      // handle time updates and name updates
+      let updatedEvents = state[action.payload.calType].map(calEvent => {
+        if (calEvent.id === action.payload.event.id) {
+          calEvent.title = action.payload.event.title;
+          calEvent.start = action.payload.event.start;
+          calEvent.end = action.payload.event.end;
+        }
+        return calEvent;
+      })
+      return {
+        ...state,
+        [action.payload.calType]: updatedEvents,
+      }
+
+      case 'DELETE_EVENT':
+        // delete an event by an event.id
+        // return events that do not match the event.id
+        let modifiedEvents = state[action.payload.calType].filter(calEvent =>
+          calEvent.id !== action.payload.event.id)
+        return {
+          ...state,
+          [action.payload.calType]: modifiedEvents,
+        }  
+
+      case 'IMPORT_DATA':
+        // import the data that was read from the file
+        // add the events to the current events, don't overwrite
+        // check each element in the state, if the added events are 
+        // not in that array, then add them, with a 'push' method
+        let updatedPlanningEvents = state.planning.map(event => event);
+        let planningEventIds = state.planning.map(event => event.id)
+        action.payload.planning.forEach(event => {
+          if (planningEventIds.indexOf(event.id) === -1){
+            updatedPlanningEvents.push(event);
+          }
+        })
+
+        let updatedTrackingEvents = state.tracking.map(event => event);
+        let trackingEventIds = state.tracking.map(event => event.id)
+        action.payload.tracking.forEach(event => {
+          if (trackingEventIds.indexOf(event.id) === -1){
+            updatedTrackingEvents.push(event);
+          }
+        })
+
+        // set the date and update the planning and tracking lists with the merged lists
+        return {
+          planning: updatedPlanningEvents,
+          tracking: updatedTrackingEvents,
+          date: action.payload.date,
+        }
+
+    default:
+      return state;
   }
-} else if (action.type === 'COMPLETETODO') {
-    let newCompleteItems = state.completeItems.slice()
-    newCompleteItems = [...newCompleteItems, { name: state.todoItems[action.payload.completeIndex].name }]
-
-    return {
-      ...state,
-      completeItems: newCompleteItems
-    }
-  } else if (action.type === 'SETNOTES') {
-    return {
-      ...state,
-      notes: action.payload.notes
-    }
-  } else if (action.type === 'ADDPLANNEDEVENT') {
-    let newPlannedEvents = state.plannedEvents.slice()
-    newPlannedEvents = [...newPlannedEvents, action.payload.event]
-    return {
-      ...state,
-      plannedEvents: newPlannedEvents,
-    }
-  } else if (action.type === 'ADDTRACKEDEVENT') {
-    let newTrackedEvents = state.trackedEvents.slice()
-    newTrackedEvents = [...newTrackedEvents, action.payload.event]
-    return {
-      ...state,
-      trackedEvents: newTrackedEvents,
-    }
-  } else if (action.type === 'SETTRACKEDEVENTNAME') {
-    // need to update to update the name supplied
-    let newTrackedEvents = state.trackedEvents.slice()
-    newTrackedEvents = [...newTrackedEvents, action.payload.event]
-    return {
-      ...state,
-      trackedEvents: newTrackedEvents,
-    }
-  } else if (action.type === 'SETPLANNEDEVENTNAME') {
-    // need to update to update the name supplied
-    let newPlannedEvents = state.plannedEvents.slice()
-    newPlannedEvents = [...newPlannedEvents, action.payload.event]
-    return {
-      ...state,
-      plannedEvents: newPlannedEvents,
-    }
-  }
-
-
-
-
-  return state;
 }
 
 export default reducer;

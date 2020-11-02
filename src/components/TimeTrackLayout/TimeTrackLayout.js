@@ -1,16 +1,19 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { useDispatch } from 'react-redux';
-import TimePlan from '../TimePlan/TimePlan';
-import TrackedTime from '../TrackedTime/TrackedTime';
-import TodoList from '../TodoList/TodoList';
-import NotesList from '../NotesList/NotesList';
+import TimeGrid from '../TimeGrid/TimeGrid';
 import '../../assets/App.css';
 
 const TimeTrackLayout = () => {
-
   // get state values from redux
   const { date } = useSelector(state => state)
+  const timewiseState = useSelector(state => {
+    return {
+      timewisePlanningEvents: state.planning,
+      timewiseTrackingEvents: state.tracking,
+      timewiseDate: state.date,
+    }
+  })
   const dispatch = useDispatch();
     
   const btnStyle = {
@@ -24,9 +27,57 @@ const TimeTrackLayout = () => {
     fontSize: '16px',
   } 
 
-  // layout will be as follows:
-  // Time Plan | Tracked Time
-  // NotesList | TodoList
+  const exportData = (state) => {
+    const outData = JSON.stringify(state);
+    //Download the file as a JSON formatted text file
+    var downloadLink = document.createElement("a");
+    var blob = new Blob(["\ufeff", outData]);
+    var url = URL.createObjectURL(blob);
+    downloadLink.href = url;
+    const outFileName = 'timewise_output.txt'
+    downloadLink.download = outFileName;
+    document.body.appendChild(downloadLink);
+    downloadLink.click();
+    document.body.removeChild(downloadLink);
+  }
+
+  const importData = async (event) => {
+    const importFile = event.target.files[0];
+    try {
+      const fileContents = await readFile(importFile);
+      const jsonData = JSON.parse(fileContents)
+      // set the state here from redux
+      dispatch({
+        type: 'IMPORT_DATA',
+        payload: {
+          planning: jsonData.timewisePlanningEvents,
+          tracking: jsonData.timewiseTrackingEvents,
+          date: jsonData.timewiseDate, 
+        },
+      });
+    } catch (e) {
+      console.log(e.message);
+    }
+  };
+
+  // read the binary contents of the file
+  const readFile = file => {
+    const temporaryFileReader = new FileReader();
+    return new Promise((resolve, reject) => {
+      temporaryFileReader.onerror = () => {
+        temporaryFileReader.abort();
+        reject(new DOMException('Problem parsing input file.'));
+      };
+      temporaryFileReader.onload = () => {
+        let text = temporaryFileReader.result;
+        resolve(text);
+      }
+      temporaryFileReader.readAsText(file);
+    });
+  };
+
+  // layout:
+  // Planned Time | Tracked Time
   return (
     <React.Fragment>
       <form>
@@ -34,7 +85,7 @@ const TimeTrackLayout = () => {
         <input 
           type="file" 
           id="timeInput" 
-          onChange={() => dispatch({ type: 'IMPORTDATA' })}
+          onChange={importData}
           style={btnStyle}
         />
         </label>
@@ -44,25 +95,19 @@ const TimeTrackLayout = () => {
         type='date'
         value={date}
         onChange={event => { 
-          console.log(event.target.value);
-          dispatch({ type: 'DATECHANGE', payload: { date: event.target.value}})
+          dispatch({ type: 'UPDATE_DISPLAY_DATE', payload: { date: event.target.value}})
         }}
       />
-      <button style={btnStyle} onClick={() => dispatch({ type: 'EXPORTDATA' })}>Export</button>
-      <div className="grid-container">
-        <div className="plan-layout">
-          <TimePlan />
-        </div>
-        <div className="tracked-layout">
-          <TrackedTime />
-        </div>
-        <div className="todo-layout">
-          <TodoList />
-        </div>
-        <div className="notes-layout">
-          <NotesList />
-        </div>
-      </div>
+      <button style={btnStyle} onClick={() => exportData(timewiseState)}>Export</button>
+      <table>
+        <tbody>
+          <tr>
+            <td><TimeGrid calType="planning" /></td>
+            <td><TimeGrid calType="tracking" /></td>
+          </tr>
+        </tbody>
+
+      </table>
     </React.Fragment>
   )
 }
