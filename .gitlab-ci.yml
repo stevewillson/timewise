@@ -11,11 +11,7 @@ deploy_staging:
     - npm install
     - echo "Building the app"
     - npm run build
-    - echo "Configure SSH key"
-    - echo "$SSH_DEPLOY_KEY_AAT" > "$(pwd)/ssh_key"
-    - chmod 400 $(pwd)/ssh_key
-    - echo "Deploy to staging server"
-    - scp -i $(pwd)/ssh_key -o UserKnownHostsFile=./ssh_config/known_hosts -r -P 7890 ./build/* gitlab@armyadmintools.com:/var/www/html/timewise/
+    - echo "Artifacts created at ./build/"
   only:
   - master
   - devel
