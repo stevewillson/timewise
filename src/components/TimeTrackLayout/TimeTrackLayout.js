@@ -1,11 +1,22 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { useDispatch } from 'react-redux';
+<<<<<<< HEAD
+import PlannedTime from '../PlannedTime/PlannedTime';
+import TrackedTime from '../TrackedTime/TrackedTime';
+import TodoList from '../TodoList/TodoList';
+import NotesList from '../NotesList/NotesList';
+import "react-datepicker/dist/react-datepicker.css";
+=======
 import TimeGrid from '../TimeGrid/TimeGrid';
+>>>>>>> devel
 import '../../assets/App.css';
 
 const TimeTrackLayout = () => {
   // get state values from redux
+<<<<<<< HEAD
+  const curState = useSelector(state => state);
+=======
   const { date } = useSelector(state => state)
   const timewiseState = useSelector(state => {
     return {
@@ -14,6 +25,7 @@ const TimeTrackLayout = () => {
       timewiseDate: state.date,
     }
   })
+>>>>>>> devel
   const dispatch = useDispatch();
     
   const btnStyle = {
@@ -27,6 +39,8 @@ const TimeTrackLayout = () => {
     fontSize: '16px',
   } 
 
+<<<<<<< HEAD
+=======
   const exportData = (state) => {
     const outData = JSON.stringify(state);
     //Download the file as a JSON formatted text file
@@ -41,6 +55,7 @@ const TimeTrackLayout = () => {
     document.body.removeChild(downloadLink);
   }
 
+>>>>>>> devel
   const importData = async (event) => {
     const importFile = event.target.files[0];
     try {
@@ -48,11 +63,21 @@ const TimeTrackLayout = () => {
       const jsonData = JSON.parse(fileContents)
       // set the state here from redux
       dispatch({
+<<<<<<< HEAD
+        type: 'IMPORTDATA',
+        payload: {
+          plannedEvents: jsonData.plannedEvents,
+          trackedEvents: jsonData.trackedEvents,
+          notes: jsonData.notes,
+          todoItems: jsonData.todoItems,
+          completeItems: jsonData.completeItems,
+=======
         type: 'IMPORT_DATA',
         payload: {
           planning: jsonData.timewisePlanningEvents,
           tracking: jsonData.timewiseTrackingEvents,
           date: jsonData.timewiseDate, 
+>>>>>>> devel
         },
       });
     } catch (e) {
@@ -76,8 +101,25 @@ const TimeTrackLayout = () => {
     });
   };
 
+<<<<<<< HEAD
+  const exportData = (state) => {
+    const outData = JSON.stringify(state);
+    //Download the file as CSV
+	  var downloadLink = document.createElement("a");
+    var blob = new Blob(["\ufeff", outData]);
+    var url = URL.createObjectURL(blob);
+    downloadLink.href = url;
+    const outFileName = 'timewise_output.txt'
+    downloadLink.download = outFileName;  //Name the file here
+    document.body.appendChild(downloadLink);
+    downloadLink.click();
+    document.body.removeChild(downloadLink);
+  }
+
+=======
   // layout:
   // Planned Time | Tracked Time
+>>>>>>> devel
   return (
     <React.Fragment>
       <form>
@@ -89,7 +131,25 @@ const TimeTrackLayout = () => {
           style={btnStyle}
         />
         </label>
+        <button style={btnStyle} onClick={() => exportData(curState)}>Export</button>
       </form>
+<<<<<<< HEAD
+      
+      <div className="grid-container">
+        <div className="plan-layout">
+          <PlannedTime />
+        </div>
+        <div className="tracked-layout">
+          <TrackedTime />
+        </div>
+        <div className="todo-layout">
+          <TodoList />
+        </div>
+        <div className="notes-layout">
+          <NotesList />
+        </div>
+      </div>
+=======
       <input
         id='dateSelect'
         type='date'
@@ -108,6 +168,7 @@ const TimeTrackLayout = () => {
         </tbody>
 
       </table>
+>>>>>>> devel
     </React.Fragment>
   )
 }
