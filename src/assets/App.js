@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
+import Header from '../components/layout/Header';
 import TimeTrackLayout from '../components/TimeTrackLayout/TimeTrackLayout';
 import './App.css';
 
@@ -9,6 +10,7 @@ class App extends Component {
     return (
       <Router>
         <div className="App">
+          <Header />
           <Route exact path="/" render={() => (
             <TimeTrackLayout />
           )} />

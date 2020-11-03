@@ -80,31 +80,45 @@ const TimeTrackLayout = () => {
   // Planned Time | Tracked Time
   return (
     <React.Fragment>
-      <form>
-        <label>Import File: 
-        <input 
-          type="file" 
-          id="timeInput" 
-          onChange={importData}
-          style={btnStyle}
-        />
-        </label>
-        <button style={btnStyle} onClick={() => exportData(timewiseState)}>Export</button>
-      </form>
-      <input
-        id='dateSelect'
-        type='date'
-        value={date}
-        onChange={event => { 
-          dispatch({ type: 'UPDATE_DISPLAY_DATE', payload: { date: event.target.value}})
-        }}
-      />
-      <button style={btnStyle} onClick={() => exportData(timewiseState)}>Export</button>
+      <table className='timewiseButtonTable'>
+        <tbody>
+          <tr>
+            <td>
+              <label htmlFor='importFileBtn'>Import File: </label> 
+              <input 
+                type="file" 
+                id="importFileBtn" 
+                onChange={importData}
+                style={btnStyle}
+              />
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <label htmlFor='exportEventsBtn'>Export Current Events: </label>
+              <button id='exportEventsBtn' style={btnStyle} onClick={() => exportData(timewiseState)}>Export</button>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <label htmlFor='dateSelect'>Select Date: </label>
+              <input
+                id='dateSelect'
+                type='date'
+                value={date}
+                onChange={event => { 
+                  dispatch({ type: 'UPDATE_DISPLAY_DATE', payload: { date: event.target.value}})
+                }}
+              />
+            </td>
+          </tr>
+        </tbody>
+      </table>
       <table>
         <tbody>
           <tr>
             <td><TimeGrid calType="planning" slotLabel={true} /></td>
-            <td><TimeGrid calType="tracking" slotLabel={false} /></td>
+            <td><TimeGrid calType="tracking" slotLabel={false} /></td> 
           </tr>
         </tbody>
 
