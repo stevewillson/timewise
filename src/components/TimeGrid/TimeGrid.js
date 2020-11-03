@@ -129,9 +129,13 @@ const TimeGrid = (props) => {
     }
   }
 
-  const setSlotLabelFormat = (slotLabel) => {
+  const slotLabelDisplay = (date) => {
+    // if the slotLabel is 'false' then do not display the label
+    // if it is true, display the 24 hour time
     if (!slotLabel) {
-      return ''
+      return '';
+    } else {
+      return date.start.marker.toISOString().substring(11,16).replace(":","");
     }
   }
 
@@ -152,7 +156,7 @@ const TimeGrid = (props) => {
           timeZone={'local'}
           slotDuration={{ minutes: 15 }}
           slotLabelInterval={{ hours: 1 }}
-          slotLabelFormat={setSlotLabelFormat(slotLabel)}
+          slotLabelFormat={(slotLabel) => slotLabelDisplay(slotLabel)}
           editable={true}
           selectable={true}
           events={calEvents}
