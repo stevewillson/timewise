@@ -17,6 +17,7 @@ const TimeGrid = (props) => {
   const calEvents = useSelector(state => state[props.calType])
   const dispatch = useDispatch();
   var calType = props.calType;
+  var slotLabel = props.slotLabel;
 
   const eventClick = (info) => {
     //console.log('EVENT CLICK')
@@ -128,6 +129,16 @@ const TimeGrid = (props) => {
     }
   }
 
+  const slotLabelDisplay = (date) => {
+    // if the slotLabel is 'false' then do not display the label
+    // if it is true, display the 24 hour time
+    if (!slotLabel) {
+      return '';
+    } else {
+      return date.start.marker.toISOString().substring(11,16).replace(":","");
+    }
+  }
+
   return (
     <React.Fragment>
       <div id={calType}>
@@ -145,6 +156,7 @@ const TimeGrid = (props) => {
           timeZone={'local'}
           slotDuration={{ minutes: 15 }}
           slotLabelInterval={{ hours: 1 }}
+          slotLabelFormat={(slotLabel) => slotLabelDisplay(slotLabel)}
           editable={true}
           selectable={true}
           events={calEvents}

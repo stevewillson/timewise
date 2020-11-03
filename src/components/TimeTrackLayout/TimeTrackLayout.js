@@ -102,8 +102,8 @@ const TimeTrackLayout = () => {
       <table>
         <tbody>
           <tr>
-            <td><TimeGrid calType="planning" /></td>
-            <td><TimeGrid calType="tracking" /></td>
+            <td><TimeGrid calType="planning" slotLabel={true} /></td>
+            <td><TimeGrid calType="tracking" slotLabel={false} /></td>
           </tr>
         </tbody>
 
