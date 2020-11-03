@@ -9,7 +9,7 @@ class App extends Component {
     return (
       <Router>
         <div className="App">
-          <Route exact path="/timewise" render={() => (
+          <Route exact path="/" render={() => (
             <TimeTrackLayout />
           )} />
         </div>

@@ -89,7 +89,7 @@ const TimeTrackLayout = () => {
           style={btnStyle}
         />
         </label>
-        <button style={btnStyle} onClick={() => exportData(curState)}>Export</button>
+        <button style={btnStyle} onClick={() => exportData(timewiseState)}>Export</button>
       </form>
       <input
         id='dateSelect'

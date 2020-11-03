@@ -2,10 +2,10 @@ default:
   image: node:lts
 
 stages:
-  - deploy
+  - build
 
-deploy_staging:
-  stage: deploy
+build_artifacts:
+  stage: build
   script:
     - echo "Installing dependencies"
     - npm install
