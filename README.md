@@ -1,16 +1,20 @@
-# Timewise
+Timewise is a simple time tracking system that provides a graphical way of viewing a daily plan and then capturing actual time spent.
 
-Timewise is a time tracking system that is simple and provides a graphical way of viewing a daily plan.
+Two timegrids are displayed:
+Planning | Tracking
 
-Two columns:
-PLANNED | ACTUAL
+Clicking the timegrid adds an event, events can be resized and moved. Clicking on an event edits the title, dragging an event off the screen removes the event.
 
-Each entry contains the following fields:
+![timewise_screenshot][screenshot_1]
 
-entry:
-  item:
-  dtgBegin
-  dtgEnd:
-category:
+[screenshot_1]: timewise_1.png "Timewise Screenshot"
 
-notes:
+
+## Installation
+
+1. Clone the git repository `git clone TIMEWISE_URL`
+2. Change directory to the cloned repository `cd timewise`
+3. Install dependencies `npm install`
+4. Start a development server `npm start`
+
+5. Browse to `localhost:3000` to see timewise

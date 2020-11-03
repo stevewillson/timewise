@@ -22,27 +22,5 @@
   color: #09d3ac;
 }
 
-.grid-container {
-  display: grid;
-}
-
-.plan-layout {
-  grid-column-start: 1;
-  grid-row-start: 1;
-}
-
-.tracked-layout {
-  grid-column-start: 2;
-  grid-row-start: 1;
-}
-
-.todo-layout {
-  grid-column-start: 1;
-  grid-row-start: 2;
-}
-
-
-.notes-layout {
-  grid-column-start: 2;
-  grid-row-start: 2;
+table, th, td {
 }
