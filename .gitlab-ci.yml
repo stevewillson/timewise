@@ -11,12 +11,13 @@ build_artifacts:
     - npm install
     - echo "Building the app"
     - npm run build
-    - echo "Artifacts created at ./build/"
+    - echo "Generating single file at ./build/"
+    - npx gulp
   only:
   - master
   - devel
   artifacts:
     paths:
-    - ./build/
+    - ./build/index.html
     expire_in: 1 week
 
