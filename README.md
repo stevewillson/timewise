@@ -19,7 +19,7 @@ Clicking the timegrid adds an event, events can be resized and moved. Clicking o
 
 ## Package to a single `index.html` file
 
-1. Clone the git repository `git clone git@gitlab.com:stevewillson/timewise.git
+1. Clone the git repository `git clone git@gitlab.com:stevewillson/timewise.git`
 2. Build the application `npm run build`
 3. Generate the single `index.html` file: `npx gulp`
 4. The generated file is located at: `./build/index.html`
