@@ -16,7 +16,7 @@ const TimeGrid = (props) => {
   const dispatch = useDispatch();
   var calType = props.calType;
   var slotLabel = props.slotLabel;
-
+  
   const eventClick = (info) => {
     //console.log('EVENT CLICK')
     // prompt for a new name and set the name
