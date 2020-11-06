@@ -1,5 +1,4 @@
 import React from 'react';
-//import { DateTime } from 'luxon';
 import { useSelector } from 'react-redux';
 import { useDispatch } from 'react-redux';
 
@@ -9,7 +8,6 @@ import { v4 as uuidv4 } from 'uuid';
 import FullCalendar from '@fullcalendar/react'
 import timeGridPlugin from '@fullcalendar/timegrid'
 import interaction from '@fullcalendar/interaction'
-import '../../assets/main.scss' // webpack must be configured to do this
 
 const TimeGrid = (props) => {
   // get state values from redux
@@ -144,15 +142,15 @@ const TimeGrid = (props) => {
       <div id={calType}>
         <h1>{props.calType}</h1>
         <FullCalendar 
-          defaultView='timeGrid'
+          initialView='timeGrid'
           visibleRange={{
             start: date,
             end: date
           }}
-          header={false}
+          headerToolbar={false}
           plugins={[ interaction, timeGridPlugin ]} 
-          minTime={'04:00:00'}
-          maxTime={'21:00:00'}
+          slotMinTime={'04:00:00'}
+          slotMaxTime={'21:00:00'}
           timeZone={'local'}
           slotDuration={{ minutes: 15 }}
           slotLabelInterval={{ hours: 1 }}
