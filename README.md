@@ -9,12 +9,18 @@ Clicking the timegrid adds an event, events can be resized and moved. Clicking o
 
 [screenshot_1]: timewise_1.png "Timewise Screenshot"
 
-
 ## Installation
 
-1. Clone the git repository `git clone TIMEWISE_URL`
+1. Clone the git repository `git clone git@gitlab.com:stevewillson/timewise.git`
 2. Change directory to the cloned repository `cd timewise`
 3. Install dependencies `npm install`
 4. Start a development server `npm start`
+5. Browse to `localhost:3000` to use timewise
 
-5. Browse to `localhost:3000` to see timewise
+## Package to a single `index.html` file
+
+1. Clone the git repository `git clone git@gitlab.com:stevewillson/timewise.git`
+2. Build the application `npm run build`
+3. Generate the single `index.html` file: `npx gulp`
+4. The generated file is located at: `./build/index.html`
+5. Open this file locally on a computer with a web browser to use timewise without connecting to the internet
