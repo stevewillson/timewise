@@ -20,7 +20,9 @@ Clicking the timegrid adds an event, events can be resized and moved. Clicking o
 ## Package to a single `index.html` file
 
 1. Clone the git repository `git clone git@gitlab.com:stevewillson/timewise.git`
-2. Build the application `npm run build`
-3. Generate the single `index.html` file: `npx gulp`
-4. The generated file is located at: `./build/index.html`
-5. Open this file locally on a computer with a web browser to use timewise without connecting to the internet
+2. Change directory to the cloned repository `cd timewise`
+3. Install dependencies `npm install`
+4. Build the application `npm run build`
+5. Generate the single `index.html` file: `npx gulp`
+6. The generated file is located at: `./build/index.html`
+7. Open this file locally on a computer with a web browser to use timewise without connecting to the internet
