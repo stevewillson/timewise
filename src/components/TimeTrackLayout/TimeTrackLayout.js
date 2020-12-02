@@ -6,7 +6,7 @@ import '../../assets/App.css';
 
 const TimeTrackLayout = () => {
   // get state values from redux
-  const { date } = useSelector(state => state)
+  const { date, startTime, endTime } = useSelector(state => state)
   const timewiseState = useSelector(state => {
     return {
       timewisePlanningEvents: state.planning,
@@ -76,6 +76,16 @@ const TimeTrackLayout = () => {
     });
   };
 
+  const resetTracker = () => {
+    let resetPrompt = prompt("Type 'yes' to confirm clearing tracker");
+    dispatch({
+      type: 'RESET_TRACKER',
+      payload: {
+        resetType: resetPrompt,
+      }
+    })  
+  }
+
   // layout:
   // Planned Time | Tracked Time
   return (
@@ -98,6 +108,14 @@ const TimeTrackLayout = () => {
               <label htmlFor='exportEventsBtn'>Export Current Events: </label>
               <button id='exportEventsBtn' style={btnStyle} onClick={() => exportData(timewiseState)}>Export</button>
             </td>
+            <td>
+              <button  
+                onClick={() => resetTracker()}
+                style={btnStyle}
+              >
+              Clear Tracker
+              </button>
+            </td>
           </tr>
           <tr>
             <td>
@@ -111,13 +129,37 @@ const TimeTrackLayout = () => {
                 }}
               />
             </td>
+            <td>
+              <label htmlFor='startTimeSelect'>Start Time: </label>
+              <input
+                id='startTimeSelect'
+                type='time'
+                step='900'
+                value={startTime}
+                onChange={event => { 
+                  dispatch({ type: 'UPDATE_START_TIME', payload: { startTime: event.target.value}})
+                }}
+              />
+            </td>
+            <td>
+              <label htmlFor='endTimeSelect'>End Time: </label>
+              <input
+                id='endTimeSelect'
+                type='time'
+                step='900'
+                value={endTime}
+                onChange={event => { 
+                  dispatch({ type: 'UPDATE_END_TIME', payload: { endTime: event.target.value}})
+                }}
+              />
+            </td>
           </tr>
         </tbody>
       </table>
       <table>
         <tbody>
           <tr>
-            <td><TimeGrid calType="planning" slotLabel={true} /></td>
+            <td><TimeGrid calType="planning" slotLabel={true}  /></td>
             <td><TimeGrid calType="tracking" slotLabel={false} /></td> 
           </tr>
         </tbody>

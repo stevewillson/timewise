@@ -4,7 +4,7 @@ default:
 stages:
   - build
 
-build_artifacts:
+build_timewise:
   stage: build
   script:
     - echo "Installing dependencies"
@@ -13,11 +13,35 @@ build_artifacts:
     - npm run build
     - echo "Generating single file at ./build/"
     - npx gulp
+    - echo "Configuring ssh key for deployment"
+    - echo "$SSH_DEPLOY_KEY" > "$(pwd)/ssh_key"
+    - chmod 400 $(pwd)/ssh_key
+    - echo "Copying index.html to remote server"
+    - scp -i $(pwd)/ssh_key -P 6789 -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null ./build/index.html gitlab@willson.tk:/var/www/html/timewise/index.html
   only:
   - master
-  - devel
   artifacts:
     paths:
     - ./build/index.html
     expire_in: 1 week
 
+build_dev_timewise:
+  stage: build
+  script:
+    - echo "Installing dependencies"
+    - npm install
+    - echo "Building the app"
+    - npm run build
+    - echo "Generating single file at ./build/"
+    - npx gulp
+    - echo "Configuring ssh key for deployment"
+    - echo "$SSH_DEPLOY_KEY" > "$(pwd)/ssh_key"
+    - chmod 400 $(pwd)/ssh_key
+    - echo "Copying index.html to remote server"
+    - scp -i $(pwd)/ssh_key -P 6789 -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null ./build/index.html gitlab@willson.tk:/var/www/html/timewise/dev/index.html
+  only:
+  - devel
+  artifacts:
+    paths:
+    - ./build/index.html
+    expire_in: 1 week
