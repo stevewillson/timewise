@@ -1,58 +1,29 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { useDispatch } from 'react-redux';
 
-import { DateTime } from 'luxon';
 import { v4 as uuidv4 } from 'uuid';
 
 import FullCalendar from '@fullcalendar/react'
 import timeGridPlugin from '@fullcalendar/timegrid'
 import interaction from '@fullcalendar/interaction'
 
+import { createEvent, updateEvent, deleteEvent } from './actions';
+
 const TimeGrid = (props) => {
   // get state values from redux
-  const { date } = useSelector(state => state)
+  const { date, startTime, endTime } = useSelector(state => state)
   const calEvents = useSelector(state => state[props.calType])
-  const dispatch = useDispatch();
   var calType = props.calType;
   var slotLabel = props.slotLabel;
+
   
   const eventClick = (info) => {
-    //console.log('EVENT CLICK')
-    // prompt for a new name and set the name
-    const eventName = prompt("Set the title")
-    if (eventName !== '' && eventName !== null) {
-      dispatch({ 
-        type: 'UPDATE_EVENT', 
-        payload: {
-          calType: calType,
-          event: {
-            title: eventName,
-            start: info.event.start,
-            end: info.event.end,
-            id: info.event.id,
-          },
-        },
-      })
-      // 'dispatch' updates in the redux store, also update on the calendar directly
-      info.event.setProp('title', eventName)
+    // prompt for a new title and set the title
+    let title = prompt('Please enter a new title for your event')
+    if (title) {
+      // update on the calendar directly, this will trigger eventUpdate
+      info.event.setProp('title', title)
     }
-  }
-
-  const eventResize = (info) => {
-    //console.log('EVENT RESIZE')
-    dispatch({ 
-      type: 'UPDATE_EVENT', 
-      payload: {
-        calType: calType,
-        event: {
-          title: info.event.title,
-          start: info.event.start,
-          end: info.event.end,
-          id: info.event.id,
-        },
-      },
-    })
   }
 
   const checkEventDeleted = (info) => {
@@ -74,56 +45,7 @@ const TimeGrid = (props) => {
         //console.log('Event not dropped outside of calendar, updating')
     } else {
       //console.log('Event dropped outside of calendar, deleting')
-      dispatch({ 
-        type: 'DELETE_EVENT', 
-        payload: {
-          calType: calType,
-          event: {
-            id: info.event.id,
-          },
-        },
-      })
-    }
-  }
-
-  const eventDrop = (info) => {
-    //console.log('EVENT DROP')
-    // checkEventDeletd eventDragStop checks to see if the event is dropped outside of the calendar area
-    // if so, then delete the event
-    //console.log('Event dropped inside of calendar, updating')
-    dispatch({ 
-      type: 'UPDATE_EVENT', 
-      payload: {
-        calType: calType,
-        event: {
-          title: info.event.title,
-          start: info.event.start,
-          end: info.event.end,
-          id: info.event.id,
-        },
-      },
-    })
-  }
-
-  // When a date is selected, create an event at that time
-  const dateSelect = (info) => {
-    //console.log('DATE SELECT')
-    const start = new DateTime.fromISO(info.startStr)
-    const end = new DateTime.fromISO(info.endStr)
-    const eventName = prompt("Set the title")
-    if (eventName !== '' && eventName !== null) {
-      dispatch({ 
-        type: 'CREATE_EVENT', 
-        payload: {
-          calType: calType,
-          event: {
-            title: eventName,
-            start: start.toJSDate(),
-            end: end.toJSDate(),
-            id: uuidv4(),
-          },
-        },
-      })
+      info.event.remove()
     }
   }
 
@@ -135,6 +57,39 @@ const TimeGrid = (props) => {
     } else {
       return date.start.marker.toISOString().substring(11,16).replace(":","");
     }
+  }
+
+  const handleDateSelect = (selectInfo) => {
+    let calendarApi = selectInfo.view.calendar
+    let title = prompt('Please enter a new title for your event')
+
+    calendarApi.unselect() // clear date selection
+
+    if (title) {
+      calendarApi.addEvent({ // will render immediately. will call handleEventAdd
+        title,
+        start: selectInfo.startStr,
+        end: selectInfo.endStr,
+        allDay: selectInfo.allDay,
+        id: uuidv4(),
+        extendedProps: { calType: calType }
+      }, true) // temporary=true, will get overwritten when reducer gives new events
+    }
+  };
+
+  const handleEventAdd = (addInfo) => {
+    // use this to call the create event function in the 'actions'
+    createEvent(addInfo.event);
+  }
+
+  const handleEventChange = (changeInfo) => {
+    // use this to call the create event function in the 'actions'
+    updateEvent(changeInfo.event);
+  }
+
+  const handleEventRemove = (removeInfo) => {
+    // use this to call the create event function in the 'actions'
+    deleteEvent(removeInfo.event)
   }
 
   return (
@@ -149,8 +104,8 @@ const TimeGrid = (props) => {
           }}
           headerToolbar={false}
           plugins={[ interaction, timeGridPlugin ]} 
-          slotMinTime={'04:00:00'}
-          slotMaxTime={'21:00:00'}
+          slotMinTime={startTime}
+          slotMaxTime={endTime}
           timeZone={'local'}
           slotDuration={{ minutes: 15 }}
           slotLabelInterval={{ hours: 1 }}
@@ -159,9 +114,9 @@ const TimeGrid = (props) => {
           selectable={true}
           events={calEvents}
           eventClick={eventClick}
-          eventResize={eventResize}
-          eventDrop={eventDrop}
-          select={dateSelect}
+          //eventResize={eventResize}
+          //eventDrop={eventDrop}
+          select={handleDateSelect}
           allDaySlot={false}
           contentHeight={'auto'}
           // used to detect events dragged off the calendar to delete
@@ -169,6 +124,9 @@ const TimeGrid = (props) => {
           // when dragging an event off of the calendar, don't show the snapback behavior
           // keep at at least '1', if set to '0' the calendar stops responding after a eventDragStop or eventDrop...
           dragRevertDuration={'1'}
+          eventAdd={handleEventAdd}
+          eventChange={handleEventChange}
+          eventRemove={handleEventRemove}
         />
       </div>
     </React.Fragment>

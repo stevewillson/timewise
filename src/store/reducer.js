@@ -1,5 +1,7 @@
 const initialState = {
   date: new Date().toISOString().slice(0,10),
+  startTime: '06:00:00',
+  endTime: '21:00:00',
   planning: [],
   tracking: [],
 }
@@ -11,6 +13,20 @@ const reducer = (state = initialState, action) => {
       return {
         ...state,
         date: action.payload.date
+      }
+
+    case 'UPDATE_START_TIME':
+      // update start time
+      return {
+        ...state,
+        startTime: action.payload.startTime
+      }
+
+    case 'UPDATE_END_TIME':
+      // update end time
+      return {
+        ...state,
+        endTime: action.payload.endTime
       }
 
     case 'CREATE_EVENT':
@@ -73,6 +89,12 @@ const reducer = (state = initialState, action) => {
           tracking: updatedTrackingEvents,
           date: action.payload.date,
         }
+
+      case 'RESET_TRACKER':
+        if (action.payload.resetType === 'yes') {
+          return initialState;
+        }
+        return state;
 
     default:
       return state;
