@@ -1,5 +1,9 @@
 Timewise is a simple time tracking system that provides a graphical way of viewing a daily plan and then capturing actual time spent.
 
+Timewise can be used to support Peter Drucker's time analysis recommendations.
+
+https://creativefollowership.com/peter-druckers-first-principle-of-time-management-2/
+
 Two timegrids are displayed:
 Planning | Tracking
 
