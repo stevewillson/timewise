@@ -1,9 +1,13 @@
+
+
 const initialState = {
   date: new Date().toISOString().slice(0,10),
   startTime: '06:00:00',
   endTime: '21:00:00',
   planning: [],
   tracking: [],
+  categories: [],
+  displayCategories: true,
 }
 
 const reducer = (state = initialState, action) => {
@@ -30,9 +34,26 @@ const reducer = (state = initialState, action) => {
       }
 
     case 'CREATE_EVENT':
+      // when attempting to add an event, check to see if the event id
+      // already exists, if it does, then do not add the event
+      let eventIds = state[action.payload.calType].map(event => event.id)
       let newEvents = state[action.payload.calType].slice()
-      newEvents = [...newEvents, action.payload.event]
       // create an event
+      if (eventIds.indexOf(action.payload.event.id) === -1 ) {
+        newEvents = [...newEvents, 
+          {
+            title: action.payload.event.title,
+            start: action.payload.event.start,
+            end: action.payload.event.end,
+            id: action.payload.event.id,
+            color: action.payload.event.color || '',
+            extendedProps: {
+              calType: action.payload.event.extendedProps.calType,
+              category: action.payload.event.extendedProps.category
+            }
+          }
+        ]
+      }
       return {
         ...state,
         [action.payload.calType]: newEvents,
@@ -44,6 +65,10 @@ const reducer = (state = initialState, action) => {
           calEvent.title = action.payload.event.title;
           calEvent.start = action.payload.event.start;
           calEvent.end = action.payload.event.end;
+          calEvent.color = action.payload.event.color || '';
+          calEvent.extendedProps.calType = action.payload.event.extendedProps.calType;
+          calEvent.extendedProps.category = action.payload.event.extendedProps.category;
+
         }
         return calEvent;
       })
@@ -60,34 +85,54 @@ const reducer = (state = initialState, action) => {
         return {
           ...state,
           [action.payload.calType]: modifiedEvents,
-        }  
+        } 
 
-      case 'IMPORT_DATA':
-        // import the data that was read from the file
-        // add the events to the current events, don't overwrite
-        // check each element in the state, if the added events are 
-        // not in that array, then add them, with a 'push' method
-        let updatedPlanningEvents = state.planning.map(event => event);
-        let planningEventIds = state.planning.map(event => event.id)
-        action.payload.planning.forEach(event => {
-          if (planningEventIds.indexOf(event.id) === -1){
-            updatedPlanningEvents.push(event);
-          }
-        })
-
-        let updatedTrackingEvents = state.tracking.map(event => event);
-        let trackingEventIds = state.tracking.map(event => event.id)
-        action.payload.tracking.forEach(event => {
-          if (trackingEventIds.indexOf(event.id) === -1){
-            updatedTrackingEvents.push(event);
-          }
-        })
-
-        // set the date and update the planning and tracking lists with the merged lists
+      case 'CREATE_CATEGORY':
+        // do not allow categories of the same name
+        let categoryNames = state.categories.map(category => category.name)
+        let newCategories = state.categories.slice()
+        if (categoryNames.indexOf(action.payload.name) === -1) {
+          newCategories = [...state.categories,
+            {
+              name: action.payload.name,
+              id: action.payload.id,
+              color: action.payload.color,
+            }
+          ]
+        }
+          
         return {
-          planning: updatedPlanningEvents,
-          tracking: updatedTrackingEvents,
-          date: action.payload.date,
+          ...state,
+          categories: newCategories
+        } 
+
+      case 'UPDATE_CATEGORY':
+        // handle time updates and name updates
+        let updatedCategories = state.categories.map(category => {
+          if (category.id === action.payload.id) {
+            category.name = action.payload.name || category.name;
+            category.color = action.payload.color || category.color;
+          }
+          return category;
+        })
+        return {
+          ...state,
+          categories: updatedCategories
+        }
+
+      case 'DELETE_CATEGORY':
+        // delete a category by a category id
+        let modifiedCategories = state.categories.filter(category =>
+          category.id !== action.payload.id)
+        return {
+          ...state,
+          categories: modifiedCategories
+        }
+      
+      case 'SET_DISPLAY_CATEGORIES':
+        return {
+          ...state,
+          displayCategories: action.payload.displayCategories,
         }
 
       case 'RESET_TRACKER':

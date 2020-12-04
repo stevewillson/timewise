@@ -11,19 +11,39 @@ import { createEvent, updateEvent, deleteEvent } from './actions';
 
 const TimeGrid = (props) => {
   // get state values from redux
-  const { date, startTime, endTime } = useSelector(state => state)
-  const calEvents = useSelector(state => state[props.calType])
+  var { date, startTime, endTime, categories } = useSelector(state => state)
+  const calEvents = useSelector(state => state[props.calType]);
   var calType = props.calType;
   var slotLabel = props.slotLabel;
 
-  
-  const eventClick = (info) => {
+  const handleEventClick = (clickInfo) => {
     // prompt for a new title and set the title
-    let title = prompt('Please enter a new title for your event')
-    if (title) {
-      // update on the calendar directly, this will trigger eventUpdate
-      info.event.setProp('title', title)
+    if (clickInfo.jsEvent?.toElement?.innerText !== undefined && clickInfo.jsEvent.toElement.innerText === "Toggle Cat") {
+      clickInfo.jsEvent.preventDefault();
+    } else {
+      let title = prompt('Please enter a new title for your event')
+      if (title) {
+        // update on the calendar directly, this will trigger eventUpdate
+        clickInfo.event.setProp('title', title)  
+      }
     }
+  }
+
+  const toggleEventCategory = (event) => {
+    // choose the next category
+    const catNameList = categories.map(category => category.name)
+    const catColorList = categories.map(category => category.color)
+    let curIndex = catNameList.indexOf(event.extendedProps.category)
+    if (curIndex  === catNameList.length - 1 || curIndex === -1) {
+      curIndex = 0;
+    } else {
+      curIndex = curIndex + 1;
+    }
+    const newIndex = curIndex;
+    const newCategory = catNameList[newIndex];
+    const newColor = catColorList[newIndex];
+    event.setExtendedProp('category', newCategory);
+    event.setProp('backgroundColor', newColor);
   }
 
   const checkEventDeleted = (info) => {
@@ -66,13 +86,23 @@ const TimeGrid = (props) => {
     calendarApi.unselect() // clear date selection
 
     if (title) {
+      let eventCategory = '';
+      let eventColor = '';
+      if (categories.length > 0) {
+        eventCategory = categories[0].name
+        eventColor = categories[0].color
+      }
       calendarApi.addEvent({ // will render immediately. will call handleEventAdd
         title,
         start: selectInfo.startStr,
         end: selectInfo.endStr,
         allDay: selectInfo.allDay,
         id: uuidv4(),
-        extendedProps: { calType: calType }
+        backgroundColor: eventColor,
+        extendedProps: { 
+          calType: calType,
+          category: eventCategory
+        }
       }, true) // temporary=true, will get overwritten when reducer gives new events
     }
   };
@@ -92,6 +122,18 @@ const TimeGrid = (props) => {
     deleteEvent(removeInfo.event)
   }
 
+  const eventRender = (info) => {
+    return (
+      <>
+        <b>{info.event.title}</b>
+        {' - '}
+        {info.event.startStr.substring(11,16)}{' - '}{info.event.endStr.substring(11,16)}
+        {' - '}
+        <button onClick={() => toggleEventCategory(info.event)}>Toggle Cat</button>
+      </>
+    )
+  }
+
   return (
     <React.Fragment>
       <div id={calType}>
@@ -106,6 +148,7 @@ const TimeGrid = (props) => {
           plugins={[ interaction, timeGridPlugin ]} 
           slotMinTime={startTime}
           slotMaxTime={endTime}
+          nowIndicator={true}
           timeZone={'local'}
           slotDuration={{ minutes: 15 }}
           slotLabelInterval={{ hours: 1 }}
@@ -113,9 +156,8 @@ const TimeGrid = (props) => {
           editable={true}
           selectable={true}
           events={calEvents}
-          eventClick={eventClick}
-          //eventResize={eventResize}
-          //eventDrop={eventDrop}
+          eventContent={eventRender}
+          eventClick={handleEventClick}
           select={handleDateSelect}
           allDaySlot={false}
           contentHeight={'auto'}
