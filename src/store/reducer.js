@@ -110,7 +110,7 @@ const reducer = (state = initialState, action) => {
         // handle time updates and name updates
         let updatedCategories = state.categories.map(category => {
           if (category.id === action.payload.id) {
-            category.title = action.payload.title || category.title;
+            category.name = action.payload.name || category.name;
             category.color = action.payload.color || category.color;
           }
           return category;

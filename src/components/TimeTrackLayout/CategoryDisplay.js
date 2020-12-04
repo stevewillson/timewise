@@ -23,12 +23,12 @@ const CategoryDisplay = () => {
     //console.log('RENAME CAT')
     //console.log(event)
     if (event.target.innerText !== 'X') {
-      const title = prompt("Set the category title")
-      if (title) {
+      const name = prompt("Set the category name")
+      if (name) {
         dispatch({ 
           type: 'UPDATE_CATEGORY', 
           payload: {
-            title: title,
+            name: name,
             id: event.target.dataset.catId,
           },
         });
