@@ -14,7 +14,12 @@ export const createEvent = (plainEventObject) => {
         start: plainEventObject.start.toISOString(),
         end: plainEventObject.end.toISOString(),
         id: plainEventObject.id,
-        extendedProps: { calType: plainEventObject.extendedProps.calType }
+        color: plainEventObject.backgroundColor || '',
+        extendedProps: 
+        { 
+          calType: plainEventObject.extendedProps.calType,
+          category: plainEventObject.extendedProps.category || '',
+        }
       },
     },
   })
@@ -30,7 +35,12 @@ export const updateEvent = (plainEventObject) => {
         start: plainEventObject.start.toISOString(),
         end: plainEventObject.end.toISOString(),
         id: plainEventObject.id,
-        extendedProps: { calType: plainEventObject.extendedProps.calType }
+        color: plainEventObject.backgroundColor,
+        extendedProps: 
+        { 
+          calType: plainEventObject.extendedProps.calType,
+          category: plainEventObject.extendedProps.category
+        }
       },
     },
   })
