@@ -33,8 +33,25 @@ const TimeTrackLayout = () => {
     fontSize: '16px',
   }
 
+  const fileInputStyle = {
+    display: 'none'
+  }
+
   const downloadJsonFileContent = (jsonContent, filename) => {
     const outData = JSON.stringify(jsonContent);
+    //Download the file as a JSON formatted text file
+    var downloadLink = document.createElement("a");
+    var blob = new Blob(["\ufeff", outData]);
+    var url = URL.createObjectURL(blob);
+    downloadLink.href = url;
+    downloadLink.download = filename;
+    document.body.appendChild(downloadLink);
+    downloadLink.click();
+    document.body.removeChild(downloadLink);
+  }
+
+  const downloadTextFileContent = (textContent, filename) => {
+    const outData = textContent;
     //Download the file as a JSON formatted text file
     var downloadLink = document.createElement("a");
     var blob = new Blob(["\ufeff", outData]);
@@ -65,127 +82,132 @@ const TimeTrackLayout = () => {
     downloadJsonFileContent(templateEvents, 'timewise_day_template.txt');
   }
 
-  const importTemplate = async (event) => {
-    const importFile = event.target.files[0];
-    try {
-      const fileContents = await readFile(importFile);
-      const jsonData = JSON.parse(fileContents)
-      // loop through the events in the template and create a new event for each one
-      jsonData.forEach(event => {
-        dispatch({ 
-          type: 'CREATE_EVENT', 
-          payload: {
-            calType: 'planning',
-            event: {
-              title: event.title,
-              start: DateTime.fromISO(date + event.start).toUTC().toISO(),
-              end: DateTime.fromISO(date + event.end).toUTC().toISO(),
-              id: uuidv4(),
-              color: event.color,
-              extendedProps: 
-              { 
-                calType: 'planning',
-                category: event.category,
+  const exportPlanText = (timewiseState, date) => {
+    // convert the events to local time when copying events for a particular day
+    let dayEvents = timewiseState.timewisePlanningEvents.filter(event => {
+      const eventStartLocal = DateTime.fromISO(event.start).toLocal()
+      return (eventStartLocal.toISODate() === date)
+    })
+
+    let sortedEvents = dayEvents.sort((a, b) => (a.start > b.start) ? 1 : -1);
+
+    let textContent = "";
+    sortedEvents.forEach(event => {
+      let category = event.extendedProps.category || 'None';
+      let start = DateTime.fromISO(event.start).toLocal().toISO().slice(11,16);
+      let end = DateTime.fromISO(event.end).toLocal().toISO().slice(11,16);
+      textContent += start + " - " + end + " " + event.title + " Category: " + category + "\r";
+    })
+    downloadTextFileContent(textContent, 'timewise_text_plan.txt');
+  }
+
+  const importTemplate = () => {
+    const importTemplateInput = document.getElementById("importTemplateFile");    
+    importTemplateInput.onchange = () => {
+      readFile(importTemplateInput.files[0]).then(content => {
+        const jsonData = JSON.parse(content)
+        jsonData.forEach(event => {
+          dispatch({ 
+            type: 'CREATE_EVENT', 
+            payload: {
+              calType: 'planning',
+              event: {
+                title: event.title,
+                start: DateTime.fromISO(date + event.start).toUTC().toISO(),
+                end: DateTime.fromISO(date + event.end).toUTC().toISO(),
+                id: uuidv4(),
+                color: event.color,
+                extendedProps: 
+                { 
+                  calType: 'planning',
+                  category: event.category,
+                },
               },
             },
-          },
+          })
         })
-      })
-      // reset the value of the import file
-      event.target.value = '';
-    } catch (e) {
-      console.log(e.message);
+      }).catch(error => console.log(error));
     }
+    importTemplateInput.click();
   };
 
-  const importData = async (event) => {
-    const importFile = event.target.files[0];
-    try {
-      const fileContents = await readFile(importFile);
-      const jsonData = JSON.parse(fileContents)
-      // set the state here from redux
-
-      jsonData.timewisePlanningEvents.forEach(event => {
-        dispatch({ 
-          type: 'CREATE_EVENT', 
-          payload: {
-            calType: event.extendedProps.calType,
-            event: {
-              title: event.title,
-              start: event.start,
-              end: event.end,
-              id: event.id,
-              color: event.color,
-              extendedProps: 
-              { 
-                calType: event.extendedProps.calType,
-                category: event.category,
+  const importData = () => {
+    const importFileInput = document.getElementById("importFile")
+    importFileInput.onchange = () => {
+      readFile(importFileInput.files[0]).then(content => {
+        const jsonData = JSON.parse(content)
+        jsonData.timewisePlanningEvents.forEach(event => {
+          dispatch({ 
+            type: 'CREATE_EVENT', 
+            payload: {
+              calType: event.extendedProps.calType,
+              event: {
+                title: event.title,
+                start: event.start,
+                end: event.end,
+                id: event.id,
+                color: event.color,
+                extendedProps: 
+                { 
+                  calType: event.extendedProps.calType,
+                  category: event.category,
+                },
               },
             },
-          },
+          })
         })
-      })
 
-      jsonData.timewiseTrackingEvents.forEach(event => {
-        dispatch({ 
-          type: 'CREATE_EVENT', 
-          payload: {
-            calType: event.extendedProps.calType,
-            event: {
-              title: event.title,
-              start: event.start,
-              end: event.end,
-              id: event.id,
-              color: event.color,
-              extendedProps: 
-              { 
-                calType: event.extendedProps.calType,
-                category: event.category,
+        jsonData.timewiseTrackingEvents.forEach(event => {
+          dispatch({ 
+            type: 'CREATE_EVENT', 
+            payload: {
+              calType: event.extendedProps.calType,
+              event: {
+                title: event.title,
+                start: event.start,
+                end: event.end,
+                id: event.id,
+                color: event.color,
+                extendedProps: 
+                { 
+                  calType: event.extendedProps.calType,
+                  category: event.category,
+                },
               },
             },
-          },
+          })
         })
-      })
 
-      jsonData.timewiseCategories.forEach(category => {
+        jsonData.timewiseCategories.forEach(category => {
+          dispatch({
+            type: 'CREATE_CATEGORY',
+            payload: {
+              id: category.id,
+              name: category.name,
+              color: category.color
+            }
+          })
+        })
+
         dispatch({
-          type: 'CREATE_CATEGORY',
+          type: 'UPDATE_DISPLAY_DATE',
           payload: {
-            id: category.id,
-            name: category.name,
-            color: category.color
-          }
-        })
-      })
-
-      dispatch({
-        type: 'UPDATE_DISPLAY_DATE',
-        payload: {
-          date: jsonData.timewiseDate, 
-        },
-      });
-      // reset the value of the import file
-      event.target.value = '';
-    } catch (e) {
-      console.log(e.message);
+            date: jsonData.timewiseDate, 
+          },
+        });
+      }).catch(error => console.log(error));
     }
+    importFileInput.click();
   };
 
-  // read the binary contents of the file
   const readFile = file => {
-    const temporaryFileReader = new FileReader();
+    const reader = new FileReader();
     return new Promise((resolve, reject) => {
-      temporaryFileReader.onerror = () => {
-        temporaryFileReader.abort();
-        reject(new DOMException('Problem parsing input file.'));
-      };
-      temporaryFileReader.onload = () => {
-        let text = temporaryFileReader.result;
-        resolve(text);
-      }
-      temporaryFileReader.readAsText(file);
+      reader.onload = event => resolve(event.target.result)
+      reader.onerror = error => reject(error)
+      reader.readAsText(file)
     });
-  };
+  }
 
   const resetTracker = () => {
     let resetPrompt = prompt("Type 'yes' to confirm clearing tracker");
@@ -209,18 +231,17 @@ const TimeTrackLayout = () => {
                 id='exportEventsBtn' 
                 style={btnStyle} 
                 onClick={() => downloadJsonFileContent(timewiseState, 'timewise_output.txt')}
-              >
-                Export All Events
+              >Export All Events
               </button>
             </td>
             <td>
-              <label htmlFor='importFileBtn'>Import File: </label> 
-              <input 
-                type="file" 
+              <button 
+                type="button" 
                 id="importFileBtn" 
-                onChange={importData}
+                onClick={() => importData()}
                 style={btnStyle}
-              />
+              >Import File</button>
+              <input type="file" id="importFile" style={fileInputStyle} />
             </td>
           </tr>
           <tr>
@@ -229,27 +250,33 @@ const TimeTrackLayout = () => {
                 id='exportTemplateBtn' 
                 style={btnStyle} 
                 onClick={() => exportTemplate(timewiseState, date)}
-              >
-                Export Day Template
+              >Export Day Template
               </button>
             </td>
             <td>
-              <label htmlFor='importTemplateBtn'>Import Day Template: </label> 
-              <input 
-                type="file" 
+              <button 
+                type="button" 
                 id="importTemplateBtn" 
-                onChange={importTemplate}
+                onClick={() => importTemplate()}
                 style={btnStyle}
-              />
+              >Import Day Template
+              </button>
+              <input type="file" id="importTemplateFile" style={fileInputStyle} />
             </td>
           </tr>
           <tr>
             <td>
+              <button
+                onClick={() => exportPlanText(timewiseState, date)}
+                style={btnStyle}
+              >Export Day Text Plan
+              </button>
+            </td>
+            <td>
               <button  
                 onClick={() => resetTracker()}
                 style={btnStyle}
-              >
-              Clear Tracker
+              >Clear Tracker
               </button>
             </td>
           </tr>
